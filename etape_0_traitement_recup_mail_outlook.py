@@ -23,7 +23,7 @@ def time_execution(treatment_title):
         return wrapper
     return decorator
 
-@time_execution("FIN DE LA RECUPERATION DES FICHIERS POINT RELAIS DEPUIS OUTLOOK")
+@time_execution("RECUPERATION DES FICHIERS POINT RELAIS DEPUIS OUTLOOK")
 def recup_mail_chronopost():
     # Liste des fichiers existants dans le dossier de sauvegarde
     pudo_files = os.listdir(os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_ORIGINALS))
