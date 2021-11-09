@@ -1,6 +1,6 @@
 import win32com.client
 import os
-import time
+from time import time
 
 PATH_SORTIE = r"\\apps\Vol1\Data\011-BO_XI_entrees\07-DOR_DP\Sorties\FRANCIS\POINT RELAIS"
 PATH_ONEDRIVE = r"d:\Users\Khaled-Khodja\OneDrive - TDF SAS\SCRIPTS\TRAITEMENT_MAIL_CHRONOPOST_PR\datas"
@@ -12,11 +12,19 @@ FOLDER_2 = "Courrier indésirable"
 SENDER_EMAIL = ["chrexp@ediserv.chronopost.fr"]
 SUBJECT = "Points relais CHRONOPOST pour TDF"
 
-def recup_mail_chronopost():
-    t0 = time.time()
-    TREATMENT_TITLE = "RECUPERATION DES FICHIERS POINT RELAIS DEPUIS OUTLOOK"
-    print("{0}\n{1}\n{0}".format("*" * len(TREATMENT_TITLE), TREATMENT_TITLE))
+def time_execution(treatment_title):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            print("{0}\n{1}\n{0}".format("*" * len(treatment_title), treatment_title))
+            t0 = time()
+            func(*args, **kwargs)
+            print("Durée du traitement: {} secondes".format(time() - t0))
+            print("{0}\nFIN DE {1}\n{0}".format("*" * len(treatment_title), treatment_title))
+        return wrapper
+    return decorator
 
+@time_execution("FIN DE LA RECUPERATION DES FICHIERS POINT RELAIS DEPUIS OUTLOOK")
+def recup_mail_chronopost():
     # Liste des fichiers existants dans le dossier de sauvegarde
     pudo_files = os.listdir(os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_ORIGINALS))
 
@@ -37,19 +45,19 @@ def recup_mail_chronopost():
                             nom_fichier_joint = message.Attachments.item(i).FileName
                             print("Fichier joint trouvé: {}".format(nom_fichier_joint))
                             if not(nom_fichier_joint in pudo_files):
-                                chemin_nom_fichier = os.path.join(PATH_ONEDRIVE, rep_c9_c13_originals, nom_fichier_joint)
+                                file_name_path = os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_ORIGINALS, nom_fichier_joint)
                                 print("Sauvegarde du fichier: {}".format(nom_fichier_joint))
-                                message.Attachments.item(i).SaveAsFile(chemin_nom_fichier)
+                                message.Attachments.item(i).SaveAsFile(file_name_path)
                     elif message.Subject == SUBJECT:
                         body = message.Body
-                        date_reception = message.ReceivedTime.strftime("%Y%m%d")
+                        received_time_date = message.ReceivedTime.strftime("%Y%m%d")
 
-                        file_name = "CHRONO_RELAIS_C13_DETAILS_CHRONOS_" + date_reception + ".csv"
+                        file_name = "CHRONO_RELAIS_C13_DETAILS_CHRONOS_" + received_time_date + ".csv"
                         print("Fichier dans corps du message trouvé: {}".format(file_name))
                         if not(file_name in pudo_files):
-                            chemin_nom_fichier = os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_ORIGINALS, file_name)
+                            file_name_path = os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_ORIGINALS, file_name)
                             print("Sauvegarde du fichier dans le corps du message: {}".format(file_name))
-                            with open(chemin_nom_fichier, "w") as f:
+                            with open(file_name_path, "w") as f:
                                 body2 = body.split("\r\n")
                                 for row in body2:
                                     f.write(row + "\n")
@@ -57,10 +65,6 @@ def recup_mail_chronopost():
             except TypeError as e:
                 print("Probleme detecte: ", e)
                 continue
-
-    TREATMENT_TITLE = "FIN DE LA RECUPERATION DES FICHIERS POINT RELAIS DEPUIS OUTLOOK"
-    print("Durée du traitement: {} secondes".format(time.time() - t0))
-    print("{0}\n{1}\n{0}".format("*" * len(TREATMENT_TITLE), TREATMENT_TITLE))
 
 
 if __name__ == "__main__":
