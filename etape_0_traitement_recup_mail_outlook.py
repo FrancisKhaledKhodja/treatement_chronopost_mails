@@ -19,7 +19,7 @@ def time_execution(treatment_title: str):
     Args:
         treatment_title (str): Name of the function, for instance.
     """
-    def decorator(func: function):
+    def decorator(func):
         def wrapper(*args, **kwargs):
             print("{0}\n{1}\n{0}".format("*" * len(treatment_title), treatment_title))
             t0 = time()
