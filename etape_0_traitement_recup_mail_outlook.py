@@ -2,16 +2,8 @@ import win32com.client
 import os
 from time import time
 
-PATH_SORTIE = r"\\apps\Vol1\Data\011-BO_XI_entrees\07-DOR_DP\Sorties\FRANCIS\POINT RELAIS"
-PATH_ONEDRIVE = r"d:\Users\Khaled-Khodja\OneDrive - TDF SAS\SCRIPTS\TRAITEMENT_MAIL_CHRONOPOST_PR\datas"
-FOLDER_C9_C13_ORIGINALS = "0_C9_C13_ORIGINAUX"
+from constants import *
 
-EMAIL_INBOX = "referentiel_logistique"
-FOLDER_1 = "Boîte de réception"
-FOLDER_2 = "Courrier indésirable"
-SENDER_EMAIL = ["chrexp@ediserv.chronopost.fr"]
-SUBJECT = "Points relais CHRONOPOST pour TDF"
-FILE_NAME_HEADER_C13 = "CHRONO_RELAIS_C13_DETAILS_CHRONOS"
 
 def time_execution(treatment_title: str):
     """decorator measuring the execution time of a function
@@ -21,20 +13,20 @@ def time_execution(treatment_title: str):
     """
     def decorator(func):
         def wrapper(*args, **kwargs):
-            print("{0}\n{1}\n{0}".format("*" * len(treatment_title), treatment_title))
+            print("{0}\n{1}\n{0}\n".format("*" * len(treatment_title), treatment_title))
             t0 = time()
             func(*args, **kwargs)
             print("Durée du traitement: {} secondes".format(time() - t0))
-            print("{0}\nFIN DE {1}\n{0}".format("*" * len(treatment_title), treatment_title))
+            print("{0}\nFIN DE {1}\n{0}\n".format("*" * len(treatment_title), treatment_title))
         return wrapper
     return decorator
 
-def file_attachment_recovery(email_inbox: str, sender_email: str, list_folders_outlook: list, backup_recovery: str, list_files_already_saved: list):
+def file_attachment_recovery(email_inbox: str, sender_email: list, list_folders_outlook: list, backup_recovery: str, list_files_already_saved: list):
     """Save attached files in an outlook email
 
     Args:
         email_inbox (str):
-        sender_email (str): email 
+        sender_email (list): list of emails 
         list_folders_outlook (list): list of folders to scan 
         backup_recovery (str): absolute path to save the files
         list_files_already_saved (list): list of files that you do not want to save again 
