@@ -21,15 +21,16 @@ def time_execution(treatment_title: str):
         return wrapper
     return decorator
 
+
 def file_attachment_recovery(email_inbox: str, sender_email: list, list_folders_outlook: list, backup_recovery: str, list_files_already_saved: list):
     """Save attached files in an outlook email
 
     Args:
-        email_inbox (str):
-        sender_email (list): list of emails 
-        list_folders_outlook (list): list of folders to scan 
+        email_inbox (str): inbox to scan
+        sender_email (list): list of emails to scan
+        list_folders_outlook (list): list of folders to scan
         backup_recovery (str): absolute path to save the files
-        list_files_already_saved (list): list of files that you do not want to save again 
+        list_files_already_saved (list): list of files that you do not want to save again
     """
     outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
 
@@ -52,12 +53,23 @@ def file_attachment_recovery(email_inbox: str, sender_email: list, list_folders_
                 print("Probleme detecte: ", e)
                 continue
 
-def body_email_recovery(email_inbox: str, sender_email: str, list_folders_outlook: list, subject: str, backup_recovery: str, file_name_header, list_files_already_saved: list):
 
+def body_email_recovery(email_inbox: str, sender_email: list, list_folders_outlook: list, subject: str, backup_recovery: str, file_name_header, list_files_already_saved: list):
+    """Save body from an outlook email
+
+    Args:
+        email_inbox (str): inbox to scan
+        sender_email (list): emails to scan
+        list_folders_outlook (list): list of folders to scan
+        subject (str): email's subject to select
+        backup_recovery (str): absolute path to save the files
+        file_name_header ([type]): file name header given to the email's body
+        list_files_already_saved (list): list of files that you do not want to save again
+    """
     outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
-    
+
     file_name_header = "CHRONO_RELAIS_C13_DETAILS_CHRONOS"
-    
+
     for folder in list_folders_outlook:
         inbox = outlook.Folders(email_inbox).Folders(folder)
         messages = inbox.items
