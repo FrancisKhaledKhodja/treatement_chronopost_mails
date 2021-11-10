@@ -68,8 +68,6 @@ def body_email_recovery(email_inbox: str, sender_email: list, list_folders_outlo
     """
     outlook = win32com.client.Dispatch("Outlook.Application").GetNamespace("MAPI")
 
-    file_name_header = "CHRONO_RELAIS_C13_DETAILS_CHRONOS"
-
     for folder in list_folders_outlook:
         inbox = outlook.Folders(email_inbox).Folders(folder)
         messages = inbox.items
