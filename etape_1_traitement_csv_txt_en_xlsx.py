@@ -1,14 +1,11 @@
 import os
-import time
 import pandas as pd
-import re
 
 from constants import *
 from various_functions import *
 
 
-def file_treatment_C13(name_file):
-
+def file_treatment_C13(path_folder, name_file):
     print("TRAITEMENT DU FICHIER C13: " + name_file)
     DAYS = "lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche"
     START_NUMBER_COLUMN = 21
@@ -23,7 +20,7 @@ def file_treatment_C13(name_file):
     for i in range(65, 68):
         dtype[i] = str
 
-    df = pd.read_csv(os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_CSV, name_file),
+    df = pd.read_csv(os.path.join(path_folder, name_file),
                                         sep=";", 
                                         header=None, 
                                         dtype=dtype, 
@@ -53,8 +50,7 @@ def file_treatment_C13(name_file):
     return df
 
 
-def file_treatment_C9(name_file):
-
+def file_treatment_C9(path_folder, name_file):
     print("TRAITEMENT DU FICHIER C9: " + name_file)
     lib_col = {"Point Relais": "code_point_relais", "Enseigne": "enseigne", "Nom": "nom"}
     lib_col.update({"Adresse 1": "adresse_1", "Adresse 2": "adresse_2", "Adresse 3": "adresse_3"})
@@ -66,7 +62,7 @@ def file_treatment_C9(name_file):
     lib_col.update({"Debut Absence.1": "debut_absence_2", "Fin Absence.1": "fin_absence_2"})
     lib_col.update({"Debut Absence.2": "debut_absence_3", "Fin Absence.2": "fin_absence_3", "Ville": "ville"})
     
-    df = pd.read_csv(os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_CSV, name_file),
+    df = pd.read_csv(os.path.join(path_folder, name_file),
                                     sep=";",
                                     dtype={"Code Postal": str},
                                     error_bad_lines=False, 
@@ -79,21 +75,19 @@ def file_treatment_C9(name_file):
 
 
 @time_execution("TRANSFORMATION DES FICHIERS CSV EN FICHIERS EXCEL")
-def transform_csv_txt_to_excel():
-
+def transform_csv_to_excel():
     list_csv_files = os.listdir(os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_CSV))
-
     list_excel_files = os.listdir(os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_EXCEL))
     list_excel_files = [file_excel.split(".")[0] for file_excel in list_excel_files]
 
     for name_file in list_csv_files:
         if not(name_file.split(".")[0] in list_excel_files):
             if "csv" in name_file and "C9" in name_file:
-                file = file_treatment_C9(name_file)
+                file = file_treatment_C9(os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_CSV), name_file)
             elif "csv" in name_file and "C13" in name_file:
-                file = file_treatment_C13(name_file)
+                file = file_treatment_C13(os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_CSV), name_file)
             file.to_excel(os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_EXCEL, name_file.split(".")[0] + ".xlsx"), index=False)
 
 
 if __name__ == "__main__":
-    transform_csv_txt_to_excel()
+    transform_csv_to_excel()
