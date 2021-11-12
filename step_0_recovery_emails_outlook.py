@@ -76,11 +76,11 @@ def body_email_recovery(email_inbox: str, sender_email: list, list_folders_outlo
 
 
 @time_execution("RECUPERATION DES FICHIERS POINT RELAIS DEPUIS OUTLOOK")
-def recup_mail_chronopost():
+def recovery_mail_chronopost():
     pudo_files = os.listdir(os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_CSV))
     file_attachment_recovery(EMAIL_INBOX, SENDER_EMAIL, [FOLDER_1, FOLDER_2], os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_CSV), pudo_files)
     body_email_recovery(EMAIL_INBOX, SENDER_EMAIL, [FOLDER_1, FOLDER_2], SUBJECT, os.path.join(PATH_ONEDRIVE, FOLDER_C9_C13_CSV), FILE_NAME_HEADER_C13, pudo_files)
 
 
 if __name__ == "__main__":
-    recup_mail_chronopost()
+    recovery_mail_chronopost()
